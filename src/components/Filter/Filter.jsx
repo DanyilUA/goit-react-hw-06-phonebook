@@ -1,9 +1,31 @@
 import React from 'react';
 import css from './Filter.module.css';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { filterContacts } from 'redux/contactDetailsReducer';
 
 
-const Filter = ({ value, onChange }) => {
+const Filter = () => {
+
+  const [value, setValue] = useState('');
+  const dispatch = useDispatch();
+  const contacts = useSelector(state => state.contacts);  
+
+useEffect(() => {
+  if (!value) {
+    dispatch(filterContacts(''));
+  } else {
+    const filteredContacts = contacts.filter(contact =>
+      contact.name.toLowerCase().includes(value.toLowerCase())
+    );
+    dispatch(filterContacts(filteredContacts));
+  }
+}, [value, contacts, dispatch]);
+
+  function onChange(event) {
+    setValue(event.target.value);
+  }
+
   return (
     <label className={ css.label}>
       Find contacts by name
@@ -19,8 +41,3 @@ const Filter = ({ value, onChange }) => {
 }
 
 export default Filter;
-
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-}

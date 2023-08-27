@@ -1,10 +1,12 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import css from './Phonebook.module.css';
+import { useSelector, useDispatch } from 'react-redux';
 
+export default function Phonebook() {
 
-export default function Phonebook({onSubmit}) {
+  const addContact = useSelector(state => state.contactDetailsSlice.addContact);
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
 
@@ -21,7 +23,7 @@ export default function Phonebook({onSubmit}) {
 
   const handleFomSubmit = e => {
         e.preventDefault();
-        onSubmit({name, number});
+        dispatch(addContact({ name, number }));
         setName('');
         setNumber('');
   };
@@ -63,8 +65,4 @@ export default function Phonebook({onSubmit}) {
       </form>
     </div>
   );
-}
-
-Phonebook.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 }
