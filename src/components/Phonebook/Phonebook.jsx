@@ -1,31 +1,21 @@
-import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import css from './Phonebook.module.css';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { addContact } from 'redux/contacsReducer';
 
 export default function Phonebook() {
 
-  const addContact = useSelector(state => state.contactDetailsSlice.addContact);
   const dispatch = useDispatch();
-  const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+
 
   const nameInputId = nanoid();
   const phoneInputId = nanoid();
 
-  const handleNameChange = e => {
-    setName(e.target.value);
-  };
-
-  const handleNumberChange = e => {
-    setNumber(e.target.value);
-  };
-
-  const handleFomSubmit = e => {
-        e.preventDefault();
-        dispatch(addContact({ name, number }));
-        setName('');
-        setNumber('');
+  const handleFomSubmit = event => {
+    event.preventDefault();
+    const form = event.target;  
+    dispatch(addContact(form.elements.name.value, form.elements.number.value));
+    form.reset();
   };
 
   return (
@@ -39,8 +29,6 @@ export default function Phonebook() {
             pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
             required
-            value={name}
-            onChange={handleNameChange}
             id={nameInputId}
             className={css.input}
           />
@@ -53,8 +41,6 @@ export default function Phonebook() {
             pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
             title="Phone should contain more then 5 numbers (0, 1, 2, 3, 4, 5, 6, 7, 8, 9) ."
             required
-            value={number}
-            onChange={handleNumberChange}
             id={phoneInputId}
             className={css.input}
           />

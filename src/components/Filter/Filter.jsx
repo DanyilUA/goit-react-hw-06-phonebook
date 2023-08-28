@@ -2,38 +2,37 @@ import React from 'react';
 import css from './Filter.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { filterContacts } from 'redux/contactDetailsReducer';
-
+import { filterContacts } from 'redux/contacsReducer';
+import { getFilter } from 'redux/selectors';
 
 const Filter = () => {
 
-  const [value, setValue] = useState('');
+  const filter = useSelector(getFilter);
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts);  
+  const [value, setValue] = useState(filter);
 
 useEffect(() => {
   if (!value) {
     dispatch(filterContacts(''));
   } else {
-    const filteredContacts = contacts.filter(contact =>
-      contact.name.toLowerCase().includes(value.toLowerCase())
-    );
-    dispatch(filterContacts(filteredContacts));
+    dispatch(filterContacts(value));
   }
-}, [value, contacts, dispatch]);
-
-  function onChange(event) {
-    setValue(event.target.value);
-  }
-
+}, [value, dispatch]);
+  
+   const handleInputChange = event => {
+     const filterValue = event.target.value;
+     setValue(filterValue);
+     dispatch(filterContacts(filterValue));
+   };
+  
   return (
-    <label className={ css.label}>
+    <label className={css.label}>
       Find contacts by name
       <input
         type="text"
         name="filter"
         value={value}
-        onChange={onChange}
+        onChange={handleInputChange}
         className={css.input}
       />
     </label>
