@@ -1,20 +1,37 @@
 import { nanoid } from 'nanoid';
 import css from './Phonebook.module.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addContact } from 'redux/contacsReducer';
+import { getContacts } from 'redux/selectors';
 
 export default function Phonebook() {
 
   const dispatch = useDispatch();
 
+  const contacts = useSelector(getContacts);
 
   const nameInputId = nanoid();
   const phoneInputId = nanoid();
 
+
   const handleFomSubmit = event => {
     event.preventDefault();
-    const form = event.target;  
-    dispatch(addContact(form.elements.name.value, form.elements.number.value));
+    const form = event.target; 
+      const name = form.elements.name.value;
+      const number = form.elements.number.value;
+    const existingContact = contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase());
+
+    if (existingContact) {
+      alert('This contact already exists.');
+      return;
+    }
+
+    dispatch(addContact({
+      id: nanoid(),
+      name,
+      number,
+    }));
+    
     form.reset();
   };
 
